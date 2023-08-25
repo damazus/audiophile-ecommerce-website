@@ -1,0 +1,38 @@
+:root{
+  --font-size: 15px;
+  --line-height: 25px;
+
+  --color-primary: #D87D4A;
+  --color-black-medium: #101010;
+  --color-gray: #CFCFCF;
+  --color-light: #F1F1F1;
+  --color-extra-light: #FAFAFA;
+  --color-accent: #FBAF85;
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-danger: #CD2C2C;
+
+  --field-height: 56px;
+  --field-border-radius: 8px;
+}
+
+@import "@/assets/scss/reset";
+@import "@/assets/scss/mixins";
+
+.container{
+  @include container;
+}
+
+.highlighted{
+   color: var(--color-primary);
+}
+
+.app{
+   display: flex;
+   flex-direction: column;
+   min-height: 100vh;
+}
+
+.main{
+   flex: 1;
+}
