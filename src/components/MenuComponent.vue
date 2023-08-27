@@ -34,9 +34,14 @@ export default defineComponent({
 .menu-link {
    --line-height-half: calc(var(--line-height) / 2);
 
+   font-size: 13px;
+   font-weight: 700;
    padding: 10px 15px;
+   letter-spacing: 1.5px;
    text-transform: uppercase;
+   color: var(--color-white);
 
+   &.router-link-exact-active,
    &:hover{
       color: var(--color-primary);
    }

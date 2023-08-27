@@ -21,3 +21,9 @@ export const CATEGORIES: CategoriesConstant = {
       thumbnail: '/assets/shared/desktop/image-category-thumbnail-earphones.png'
    },
 }
+
+export function formatPrice(price: number): string{
+   const language = navigator.language
+
+   return Intl.NumberFormat(language).format(price)
+}

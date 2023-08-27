@@ -39,3 +39,8 @@ export interface Product{
    },
    others: OtherItem[]
 }
+
+export interface CartItem{
+   product: Product,
+   quantity: number
+}

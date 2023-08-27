@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
+import NotFound from '@/components/NotFound.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +17,7 @@ const router = new VueRouter({
       {
          path: '/categories/:slug',
          name: 'categories',
-         component: () => import('@/views/CategoryView.vue')
+         component: () => import('@/views/CategoryView.vue'),
       },
       {
          path: '/products/:slug',
@@ -28,6 +29,11 @@ const router = new VueRouter({
          name: 'checkout',
          component: () => import('@/views/CheckoutView.vue')
       },
+      {
+         path: '*',
+         name: 'notFound',
+         component: NotFound,
+      }
    ]
 })
 

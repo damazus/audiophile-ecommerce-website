@@ -2,8 +2,7 @@
 import {defineComponent} from 'vue'
 import type {PropType} from 'vue'
 import {toKebabCase} from '@/utils'
-import type {Product} from "@/types";
-import type {Location, Route, RouterLinkProps} from "vue-router/types/router";
+import type {Location} from "vue-router/types/router";
 
 interface ButtonTheme {
    key: string
@@ -50,16 +49,27 @@ export default defineComponent({
          type: Boolean,
          default: true
       },
+      disabled: {
+         type: Boolean,
+         default: false
+      }
    },
    computed: {
       finalIcon(): string | null {
          return this.theme.key === BUTTON_THEMES.link.key ? 'shared-desktop-icon-arrow-right' : null
       },
+      finalLink(): Location | null {
+         return this.disabled ? null : this.link
+      },
       className(): string {
          return toKebabCase(this.theme.key)
       },
       tagName(): string{
-         return this.link ? 'router-link' : 'button'
+         if(this.link){
+            return this.disabled ? 'div' : 'router-link'
+         }else{
+            return 'button'
+         }
       }
    },
 })
@@ -68,9 +78,11 @@ export default defineComponent({
 <template>
    <component
       :is="tagName"
-      :to="link"
+      :to="finalLink"
       class="button"
-      :class="[`button--${className}`]"
+      :class="[`button--${className}`, {'button--disabled': disabled}]"
+      v-bind="$attrs"
+      v-on="$listeners"
    >
       <slot></slot>
       <SvgIcon
@@ -96,7 +108,7 @@ export default defineComponent({
    justify-content: center;
    align-items: center;
    gap: 8px;
-   font-weight: 500;
+   font-weight: 700;
    font-size: 13px;
    text-transform: uppercase;
    min-height: 48px;
@@ -151,13 +163,23 @@ export default defineComponent({
          margin-top: -2px;
       }
 
-      &:hover .button__icon path {
-         stroke: var(--color-primary);
+      &:hover{
+         color: var(--color-primary);
       }
    }
 
-   &__icon path {
-      stroke: red;
+   &--disabled{
+      cursor: default;
+
+      --color: #606060;
+      --background-color: #E0E0E0;
+      --border-color: #E0E0E0;
+
+      &:hover {
+         --color: #606060;
+         --background-color: #E0E0E0;
+         --border-color: #E0E0E0;
+      }
    }
 }
 </style>

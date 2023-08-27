@@ -1,5 +1,7 @@
 <script lang="ts">
-import {defineComponent} from 'vue'
+import { defineComponent } from 'vue'
+import type { PropType } from 'vue'
+
 export default defineComponent({
    name: 'TextField',
    model: {
@@ -19,9 +21,9 @@ export default defineComponent({
          type: String,
          default: null
       },
-      error: {
-         type: String,
-         default: null
+      errors: {
+         type: Array as PropType<string[]>,
+         default: () => []
       },
    },
    computed: {
@@ -38,12 +40,12 @@ export default defineComponent({
 </script>
 
 <template>
-   <div class="text-field" :class="{'text-field--error': Boolean(error)}">
+   <div class="text-field" :class="{'text-field--error': Boolean(errors.length)}">
       <label class="text-field__main">
-      <span class="text-field__infos">
-        <span class="text-field__label">{{ label }}</span>
-        <span class="text-field__error" v-if="error">{{ error }}</span>
-      </span>
+         <span class="text-field__infos">
+           <span class="text-field__label">{{ label }}</span>
+           <span class="text-field__error" v-if="errors.length">{{ errors[0] }}</span>
+         </span>
          <input
             type="text"
             class="text-field__input"
@@ -56,6 +58,8 @@ export default defineComponent({
 
 <style lang="scss">
 .text-field {
+   --input-border-color: var(--color-gray);
+   --label-color: inherit;
 
    &__main {
       display: flex;
@@ -75,6 +79,7 @@ export default defineComponent({
 
    &__label {
       font-weight: 700;
+      color: var(--label-color);
    }
 
    &__error {
@@ -87,7 +92,7 @@ export default defineComponent({
       font-size: 14px;
       min-height: var(--field-height);
       padding: 0 18px;
-      border: 1px solid var(--color-gray);
+      border: 1px solid var(--input-border-color);
       border-radius: var(--field-border-radius);
 
       &:active {
@@ -96,8 +101,12 @@ export default defineComponent({
    }
 
    &--error {
+      --input-border-color: var(--color-danger);
+      --label-color: var(--color-danger);
+
       .text-field__input {
-         border: 2px solid var(--color-danger);
+         border-width: 2px;
+         //border: 2px solid var(--color-danger);
       }
    }
 }

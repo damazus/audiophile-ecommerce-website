@@ -1,11 +1,26 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {useCartStore} from '@/stores/cart'
+import {mapState} from "pinia";
 import MenuComponent from "@/components/MenuComponent.vue";
+import CartDropdown from "@/components/CartDropdown.vue";
+import ButtonComponent, { BUTTON_THEMES }from "@/components/ButtonComponent.vue";
 
 export default defineComponent({
    name: 'HeaderComponent',
    components: {
-      MenuComponent
+      MenuComponent,
+      CartDropdown,
+      ButtonComponent,
+   },
+   data(){
+      return{
+         BUTTON_THEMES,
+         showCart: false
+      }
+   },
+   computed: {
+      ...mapState(useCartStore, ['totalQuantity'])
    }
 })
 </script>
@@ -17,14 +32,23 @@ export default defineComponent({
             <img src="/assets/shared/desktop/logo.svg" class="header__brand-img" alt="..."/>
          </a>
          <MenuComponent class="header__menu"/>
-         <router-link :to="{name: 'checkout'}" class="header__basket">
+         <ButtonComponent
+            class="header__basket"
+            :theme="BUTTON_THEMES.link"
+            :show-icon="false"
+            @click="showCart = !showCart"
+         >
             <SvgIcon
+               class="header__basket-icon"
                name="shared-desktop-icon-cart"
-               width="23"
-               height="20"
             />
-         </router-link>
+            <span class="header__basket-count" v-if="totalQuantity">{{ totalQuantity }}</span>
+         </ButtonComponent>
       </div>
+      <CartDropdown
+         v-if="showCart"
+         v-model="showCart"
+      />
    </header>
 </template>
 
@@ -32,7 +56,6 @@ export default defineComponent({
 @use '@/assets/scss/mixins';
 
 .header {
-   color: var(--color-white);
    background-color: var(--color-black-medium);
 
    &__container {
@@ -51,6 +74,41 @@ export default defineComponent({
 
    .menu-link{
       padding: calc(48px - var(--line-height-half)) 10px;
+   }
+
+   &__basket{
+      --size: 40px;
+
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: var(--size);
+      height: var(--size);
+      color: var(--color-white);
+   }
+
+   &__basket-icon.svg-icon{
+      width: 24px;
+   }
+
+   &__basket-count{
+      --size: 25px;
+
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate(30%, -30%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: var(--size);
+      height: var(--size);
+      color: var(--color-white);
+      background-color: var(--color-primary);
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 50%;
    }
 }
 </style>

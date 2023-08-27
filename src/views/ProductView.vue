@@ -1,16 +1,22 @@
 <script lang="ts">
 import {defineComponent} from 'vue'
+import {useCartStore} from '@/stores/cart'
 import type {Product} from "@/types";
 import data from "@/data.json";
 import About from '@/components/About.vue'
 import Categories from '@/components/Categories.vue'
 import ProductItem from '@/components/ProductItem.vue'
 import ButtonComponent, {BUTTON_THEMES} from "@/components/ButtonComponent.vue";
+import ButtonGoBack from "@/components/ButtonGoBack.vue";
 import InputStepper from "@/components/InputStepper.vue";
+import {formatPrice} from "@/constants";
+
+const store = useCartStore()
 
 export default defineComponent({
    components: {
       ButtonComponent,
+      ButtonGoBack,
       Categories,
       ProductItem,
       InputStepper,
@@ -19,7 +25,7 @@ export default defineComponent({
    data() {
       return {
          BUTTON_THEMES,
-         quantity: 5
+         quantity: 1
       }
    },
    computed: {
@@ -28,6 +34,20 @@ export default defineComponent({
       },
       product(): Product | undefined {
          return data.find((item: Product) => item.slug === this.slug)
+      },
+      priceFormatted(): string | undefined{
+
+         return this.product ? formatPrice(this.product?.price) : undefined
+      }
+   },
+   methods: {
+      addToCart(){
+         if(this.product){
+            store.add({
+               product: this.product,
+               quantity: this.quantity
+            })
+         }
       }
    }
 })
@@ -35,19 +55,16 @@ export default defineComponent({
 
 <template>
    <div class="product-view" v-if="product">
-      <ButtonComponent
-         :theme="BUTTON_THEMES.link"
-         class="product-view__button-back"
-         :show-icon="false">Go Back
-      </ButtonComponent>
+      <ButtonGoBack/>
+
       <div class="product-view__main">
          <ProductItem :product="product" class="product-view__overview">
             <template #footer>
                <div class="product-view__overview-footer">
-                  <div class="product-view__price">$ {{ product.price }}</div>
+                  <div class="product-view__price">$ {{ priceFormatted }}</div>
                   <div class="product-view__actions">
                      <InputStepper class="product-view__stepper" v-model="quantity"/>
-                     <ButtonComponent class="product-view__add-to-card">ADD TO CART</ButtonComponent>
+                     <ButtonComponent class="product-view__add-to-card" @click="addToCart">ADD TO CART</ButtonComponent>
                   </div>
                </div>
             </template>
